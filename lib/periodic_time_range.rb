@@ -6,30 +6,30 @@ require 'active_support/time'
 
 require 'periodic_time_range/version'
 
-class PeriodicTimeRange
+module PeriodicTimeRange
 
-  attr_reader :current_time, :recurrence
+  FIFTEEN_MINUTES = 15.minutes.freeze
 
-  def initialize(current_time, seconds_between_recurrences)
-    @current_time = current_time
-    @recurrence = seconds_between_recurrences
+  def self.to_range(current_time, duration_in_secs)
+    candidate_ranges(current_time, duration_in_secs).find { |r|
+      r.cover?(current_time - duration_in_secs)
+    }
   end
 
-  def to_range
-    candidate_ranges.find { |r| r.cover?(current_time - recurrence) }
+  def self.last_15_minutes
+    to_range(Time.current, FIFTEEN_MINUTES)
   end
 
   private
 
-  def start_of_latest_candidate_range
-    (current_time + recurrence).beginning_of_hour
+  def self.start_of_latest_candidate_range(current_time, duration_in_secs)
+    (current_time + duration_in_secs).beginning_of_hour
   end
 
-  def candidate_ranges
-    slcr = start_of_latest_candidate_range
-    -10.upto(10).map { |n| recurrence * n } # -10r, -9r, .. -r, 0, r, 2r, 3r, etc.
-      .map { |s| [s, s - recurrence] } # [-10r, -11r], .. [0, -r], [r, 0], [2r, r], etc.
+  def self.candidate_ranges(current_time, duration_in_secs)
+    slcr = start_of_latest_candidate_range(current_time, duration_in_secs)
+    -10.upto(10).map { |n| duration_in_secs * n } # -10r, -9r, .. -r, 0, r, 2r, 3r, etc.
+      .map { |s| [s, s - duration_in_secs] } # [-10r, -11r], .. [0, -r], [r, 0], [2r, r], etc.
       .map { |s| (slcr - s[0].seconds ... slcr - s[1].seconds) }
   end
-
 end

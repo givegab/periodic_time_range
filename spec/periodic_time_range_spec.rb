@@ -31,7 +31,7 @@ describe PeriodicTimeRange do
           hms(13, 14, 59) => r4
         }
         io.each do |i, o|
-          result = described_class.new(i, 15.minutes).to_range
+          result = described_class.to_range(i, 15.minutes)
           expect(result).to_not be_nil
 
           # Interestingly, tripple-dot ranges initialized with
@@ -46,7 +46,7 @@ describe PeriodicTimeRange do
     context '6 hours between recurrences' do
       it 'returns the expected range of Time' do
         current_time = Time.zone.local(2014, 7, 23, 0, 4, 59)
-        result = described_class.new(current_time, 6.hours).to_range
+        result = described_class.to_range(current_time, 6.hours)
         expect(result).to_not be_nil
         expect(result.begin).to eq(Time.zone.local(2014, 7, 22, 18, 0, 0))
         expect(result.end).to eq(Time.zone.local(2014, 7, 23, 0, 0, 0))
@@ -56,11 +56,12 @@ describe PeriodicTimeRange do
     context '10 seconds between recurrences' do
       it 'returns the expected range of Time' do
         current_time = Time.zone.local(2014, 7, 23, 0, 0, 1)
-        result = described_class.new(current_time, 10.seconds).to_range
+        result = described_class.to_range(current_time, 10.seconds)
         expect(result).to_not be_nil
         expect(result.begin).to eq(Time.zone.local(2014, 7, 22, 23, 59, 50))
         expect(result.end).to eq(Time.zone.local(2014, 7, 23, 0, 0, 0))
       end
     end
+
   end
 end
