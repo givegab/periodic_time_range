@@ -28,18 +28,19 @@ require 'active_support'
 require 'active_support/time'
 Time.zone = 'Eastern Time (US & Canada)'
 
-# Initialize a range with the current time ..
-# (usually Time.current) 
+# Given the current time .. (usually Time.current)
 current_time = Time.zone.local(2014, 8, 20, 18, 17, 0)
 
-# .. and a number of seconds between recurrences.
-pt_range = PeriodicTimeRange.new(current_time, 15.minutes)
-
-# Use `#to_range` to get the most recent range.  It returns 
+# .. and a number of seconds between recurrences,
+# use `.to_range` to get the most recent range.  It returns
 # a `Range` of `ActiveSupport::TimeWithZone`.
-range = pt_range.to_range
+range = PeriodicTimeRange.to_range(current_time, 15.minutes)
 range.begin # => Wed, 20 Aug 2014 18:00:00 EDT -04:00
 range.end   # => Wed, 20 Aug 2014 18:15:00 EDT -04:00
+
+# Because `Time.current` and `15.minutes` is the most common
+# use case, there's a shortcut.
+PeriodicTimeRange.last_15_minutes
 ```
 
 [1]: https://github.com/rails/rails/tree/master/activesupport
