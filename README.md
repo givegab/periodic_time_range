@@ -22,6 +22,8 @@ a few minutes later, at 18:17.
 # Usage
 
 ```ruby
+require 'bundler/setup' # better yet: `bundle console` instead of `irb`
+
 # If you are not using rails, first load activesupport and 
 # set your time zone.
 require 'active_support'
@@ -34,6 +36,7 @@ current_time = Time.zone.local(2014, 8, 20, 18, 17, 0)
 # .. and a number of seconds between recurrences,
 # use `.to_range` to get the most recent range.  It returns
 # a `Range` of `ActiveSupport::TimeWithZone`.
+require 'periodic_time_range'
 range = PeriodicTimeRange.to_range(current_time, 15.minutes)
 range.begin # => Wed, 20 Aug 2014 18:00:00 EDT -04:00
 range.end   # => Wed, 20 Aug 2014 18:15:00 EDT -04:00
