@@ -41,6 +41,15 @@ describe PeriodicTimeRange do
           expect([result.min, result.last]).to eq([o.min, o.last])
         end
       end
+
+      context 'near a day boundary' do
+        it 'returns the expected range' do
+          current_time = Time.zone.local(2021, 11, 23, 0, 0, 17)
+          result = described_class.to_range(current_time, 15.minutes)
+          expect(result.begin).to eq(Time.zone.local(2021, 11, 22, 23, 45, 0))
+          expect(result.end).to eq(Time.zone.local(2021, 11, 23, 0, 0, 0))
+        end
+      end
     end
 
     context '6 hours between recurrences' do
@@ -50,6 +59,15 @@ describe PeriodicTimeRange do
         expect(result).to_not be_nil
         expect(result.begin).to eq(Time.zone.local(2014, 7, 22, 18, 0, 0))
         expect(result.end).to eq(Time.zone.local(2014, 7, 23, 0, 0, 0))
+      end
+
+      context 'later in the day' do
+        it 'returns the expected range' do
+          current_time = Time.zone.local(2021, 11, 23, 16, 30, 0)
+          result = described_class.to_range(current_time, 6.hours)
+          expect(result.begin).to eq(Time.zone.local(2021, 11, 23, 6, 0, 0))
+          expect(result.end).to eq(Time.zone.local(2021, 11, 23, 12, 0, 0))
+        end
       end
     end
 
